@@ -5,6 +5,8 @@ import com.example.blackrock.domain.*;
 import com.example.blackrock.domain.dto.FilterResponse;
 import com.example.blackrock.util.DateUtil;
 import com.example.blackrock.util.IntervalTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,7 +15,10 @@ import java.util.*;
 @Service
 public class TemporalService {
 
+  private static final Logger log = LoggerFactory.getLogger(TemporalService.class);
+
   public FilterResponse applyPeriods(java.util.List<PeriodQ> qList, java.util.List<PeriodP> pList, java.util.List<PeriodK> kList, java.util.List<Transaction> txs) {
+    log.debug("filter: input transactionsCount={}", txs != null ? txs.size() : 0);
     FilterResponse resp = new FilterResponse();
 
     java.util.List<PeriodQ> qSorted = new java.util.ArrayList<>(qList);
@@ -44,7 +49,7 @@ public class TemporalService {
         resp.getValid().add(t);
       }
     }
-
+    log.info("filter: completed, valid={}, invalid={}", resp.getValid().size(), resp.getInvalid().size());
     return resp;
   }
 

@@ -5,6 +5,8 @@ import com.example.blackrock.domain.*;
 import com.example.blackrock.domain.dto.*;
 import com.example.blackrock.util.DateUtil;
 import com.example.blackrock.util.TaxUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,10 +16,12 @@ import java.util.Map;
 @Service
 public class ReturnsService {
 
+  private static final Logger log = LoggerFactory.getLogger(ReturnsService.class);
   private static final double NPS_RATE = 0.0711;
   private static final double INDEX_RATE = 0.1449;
 
   public ReturnsResponse computeNps(ReturnsRequest req, TemporalService temporal, TransactionService txService) {
+    log.debug("returns:nps: started");
     FilterResponse filtered = temporal.applyPeriods(req.getQ(), req.getP(), req.getK(), req.getTransactions());
     List<Transaction> valid = filtered.getValid();
 
@@ -44,11 +48,12 @@ public class ReturnsService {
     double taxBenefit = taxBefore - taxAfter;
 
     double profits = A - invested;
-
+    log.info("returns:nps: completed, kPeriods={}", req.getK().size());
     return new ReturnsResponse(round2(totalAmount), round2(totalCeiling), sbd, round2(profits), round2(taxBenefit));
   }
 
   public ReturnsResponse computeIndex(ReturnsRequest req, TemporalService temporal, TransactionService txService) {
+    log.debug("returns:index: started");
     FilterResponse filtered = temporal.applyPeriods(req.getQ(), req.getP(), req.getK(), req.getTransactions());
     List<Transaction> valid = filtered.getValid();
 
@@ -66,7 +71,7 @@ public class ReturnsService {
     int tYears = (req.getAge() < 60) ? (60 - req.getAge()) : 5;
     double A = invested * Math.pow(1 + INDEX_RATE, tYears);
     double profits = A - invested;
-
+    log.info("returns:index: completed, kPeriods={}", req.getK().size());
     return new ReturnsResponse(round2(totalAmount), round2(totalCeiling), sbd, round2(profits), 0.0);
   }
 

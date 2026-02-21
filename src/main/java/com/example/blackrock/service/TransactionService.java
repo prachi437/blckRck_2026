@@ -5,6 +5,8 @@ import com.example.blackrock.domain.Expense;
 import com.example.blackrock.domain.Transaction;
 import com.example.blackrock.domain.dto.ParseTransactionsResponse;
 import com.example.blackrock.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,7 +15,10 @@ import java.util.*;
 @Service
 public class TransactionService {
 
+  private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
+
   public ParseTransactionsResponse parse(java.util.List<Expense> expenses) {
+    log.debug("parse: input count={}", expenses != null ? expenses.size() : 0);
     java.util.List<Transaction> txs = new java.util.ArrayList<>(expenses.size());
     double sumAmount = 0, sumCeil = 0;
     for (Expense e : expenses) {
@@ -26,10 +31,12 @@ public class TransactionService {
       sumAmount += amount; sumCeil += ceiling;
     }
     txs.sort(java.util.Comparator.comparing(Transaction::getDate));
+    log.info("parse: completed, transactionsCount={}", txs.size());
     return new ParseTransactionsResponse(txs, sumAmount, sumCeil);
   }
 
   public com.example.blackrock.domain.dto.ValidateResponse validate(double wageMonthly, java.util.List<Transaction> txs) {
+    log.debug("validate: input transactionsCount={}", txs != null ? txs.size() : 0);
     com.example.blackrock.domain.dto.ValidateResponse resp = new com.example.blackrock.domain.dto.ValidateResponse();
     java.util.Set<LocalDateTime> seen = new java.util.HashSet<>();
     for (Transaction t : txs) {
@@ -46,6 +53,8 @@ public class TransactionService {
         resp.getValid().add(t);
       }
     }
+    log.info("validate: completed, valid={}, invalid={}, duplicates={}",
+        resp.getValid().size(), resp.getInvalid().size(), resp.getDuplicates().size());
     return resp;
   }
 }

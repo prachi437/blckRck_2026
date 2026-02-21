@@ -90,6 +90,20 @@ docker stop blackrock-api
 docker rm blackrock-api
 ```
 
+### Sync with Docker Hub (auto-build on push)
+
+A GitHub Actions workflow builds and pushes the image to Docker Hub when you push to `main` or `master`.
+
+1. **Create a Docker Hub account** at [hub.docker.com](https://hub.docker.com) (if needed).
+2. **Create an Access Token**: Docker Hub → Account Settings → Security → New Access Token (read & write).
+3. **Add GitHub secrets** (repo → Settings → Secrets and variables → Actions):
+   - `DOCKERHUB_USERNAME` – your Docker Hub username
+   - `DOCKERHUB_TOKEN` – the access token from step 2
+4. **Push to `main` (or `master`)** – the workflow will build the JAR, build the image, and push to Docker Hub.
+
+Resulting image: `YOUR_DOCKERHUB_USERNAME/blackrock-challenge:latest` (and a short SHA tag).  
+To use a different image name, change the `IMAGE_NAME` env in `.github/workflows/docker-publish.yml`.
+
 ---
 
 ## Quick test

@@ -1,7 +1,7 @@
 
 # docker build -t blk-hacking-ind-prachi-rajput .
-# OS: Using Alpine Linux for small footprint and fast updates (Linux-based as required).
-FROM eclipse-temurin:17-jre-alpine
+# Base image supports linux/amd64 and linux/arm64 (eclipse-temurin:17-jre-alpine has no arm64 manifest).
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 COPY target/blackrock-challenge-1.0.0.jar app.jar

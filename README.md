@@ -116,7 +116,7 @@ curl -s -X POST http://localhost:5477/blackrock/challenge/v1/transactions:parse 
 
 ---
 
-## Project structure
+## Project structures
 
 | Path | Description |
 |------|-------------|

@@ -1,17 +1,21 @@
-
 package com.example.blackrock.service;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PerformanceService {
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Perf {
-    public String time;
-    public String memory;
-    public int threads;
-    public Perf(String time, String memory, int threads) {
-      this.time = time; this.memory = memory; this.threads = threads;
-    }
+    private String time;
+    private String memory;
+    private int threads;
   }
 
   public Perf snapshot(long startNanos) {
